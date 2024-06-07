@@ -1,0 +1,1 @@
+BottomNavigationBar ve pageview'i bir arada kullan kaydı izleyerek kaydı tamamen izle
