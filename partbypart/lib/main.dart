@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:partbypart/bottomnav.dart';
+//Merhaba Ahmet bey. Elbette, ders kaydını aşağıda iletiyoruz. İyi günler dileriz.
 
-import 'package:partbypart/page_view.dart';
-
+//Ders kaydı: https://drive.google.com/file/d/1yIFY7KtYdNrRdLJZVDKKVFKU-ehq-Hm9/view
+//tabbar yapamıyorum
 void main() {
-  runApp(si());
+  runApp(const si());
 }
 
 class si extends StatelessWidget {
@@ -11,9 +13,9 @@ class si extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Pagev(),
+      home: bot(),
     );
   }
 }
