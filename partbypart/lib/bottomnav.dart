@@ -16,11 +16,14 @@ List<MaterialAccentColor> renkler = [
   Colors.amberAccent
 ];
 
-class _botState extends State<bot> {
+class _botState extends State<bot> with SingleTickerProviderStateMixin {
+  //Kalıp
+  late TabController t1;
+
   int selectedItem = 1;
   final List<Widget> _pages = [
     Page1(
-      key: PageStorageKey("Page1"),
+      key: const PageStorageKey("Page1"),
     ),
     const Page2(
       key: PageStorageKey("Page2"),
@@ -31,24 +34,60 @@ class _botState extends State<bot> {
   ];
   PageController p1 = PageController(initialPage: 1);
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    t1 = TabController(length: _pages.length, vsync: this);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        controller: p1,
-        children: _pages,
-        onPageChanged: (value) {
-          setState(() {
-            selectedItem = value;
-          });
-        },
+    return DefaultTabController(
+      initialIndex: selectedItem,
+      length: 3,
+      child: Scaffold(
+        body: PageView(
+          controller: p1,
+          children: _pages,
+          onPageChanged: (value) {
+            setState(() {
+              selectedItem = value;
+              t1.index = value;
+            });
+          },
+        ),
+        appBar: _appBar(),
+        bottomNavigationBar: _bottomNavigationBar(),
       ),
-      appBar: _appBar(),
-      bottomNavigationBar: _bottomNavigationBar(),
     );
   }
 
   AppBar _appBar() {
     return AppBar(
+      bottom: TabBar(
+        controller: t1,
+        onTap: (value) {
+          setState(() {
+            selectedItem = value;
+            p1.jumpToPage(selectedItem);
+          });
+        },
+        dividerColor: Colors.transparent,
+        tabs: const <Widget>[
+          Tab(
+            text: 'Flights',
+            icon: Icon(Icons.flight),
+          ),
+          Tab(
+            text: 'Trips',
+            icon: Icon(Icons.luggage),
+          ),
+          Tab(
+            text: 'Explore',
+            icon: Icon(Icons.explore),
+          ),
+        ],
+      ),
       title: const Text("BottomNavigationBar"),
       automaticallyImplyLeading: false,
       backgroundColor: renkler[selectedItem],
@@ -68,7 +107,7 @@ class _botState extends State<bot> {
       },
       items: [
         BottomNavigationBarItem(
-          icon: Icon(
+          icon: const Icon(
             Icons.add,
             color: Colors.lightBlue,
           ),
@@ -76,14 +115,14 @@ class _botState extends State<bot> {
           backgroundColor: renkler[selectedItem],
         ),
         BottomNavigationBarItem(
-            icon: Icon(
+            icon: const Icon(
               Icons.whatshot_outlined,
               color: Colors.lightBlue,
             ),
             label: "Burn",
             backgroundColor: renkler[selectedItem]),
         BottomNavigationBarItem(
-            icon: Icon(
+            icon: const Icon(
               Icons.add_a_photo,
               color: Colors.lightBlue,
             ),
