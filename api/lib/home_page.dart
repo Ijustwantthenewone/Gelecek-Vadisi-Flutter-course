@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:api/model/user_model.dart';
+import 'package:api/model/Users.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -11,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<User> listem = [];
+  List<Users> usersList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -19,19 +20,14 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.sync),
           onPressed: () async {
-            getLocalData();
+            getDataFromApi();
           },
         ),
         appBar: _Appbar(),
         body: ListView.builder(
           itemBuilder: (context, index) {
-            User user = listem[index];
-            return ListTile(
-              title: Text("${listem[index].id}"),
-              leading: Text("${listem[index].name}"),
-            );
+            return null;
           },
-          itemCount: listem.length,
         ));
   }
 
@@ -41,15 +37,38 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  getLocalData() async {
-    String veri =
-        await DefaultAssetBundle.of(context).loadString("assets/users.json");
+  // getLocalData() async {
+  //   String veri =
+  //       await DefaultAssetBundle.of(context).loadString("assets/users.json");
 
-    List<dynamic> degisken = jsonDecode(veri);
-    List<User> users = degisken.map((e) => User.fromJson(e)).toList();
+  //   List<dynamic> degisken = jsonDecode(veri);
+  //   List<User> users = degisken.map((e) => User.fromJson(e)).toList();
 
-    setState(() {
-      listem = users;
-    });
+  //   setState(() {
+  //     listem = users;
+  //   });
+  // }
+
+  getDataFromApi() async {
+    try {
+      Response cevap = await http
+          .get(Uri.parse("https://jsonplaceholder.typicode.com/posts"));
+      List<dynamic> dartOldu = jsonDecode(cevap.body);
+
+      if (cevap.statusCode == 200) {
+        List<Users> evet = dartOldu
+            .map(
+              (e) => Users.fromJson(e),
+            )
+            .toList();
+        setState(() {
+          usersList = evet;
+        });
+      } else {
+        print("False connection");
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
