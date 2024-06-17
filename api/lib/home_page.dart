@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:api/model/Users.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -12,23 +13,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Users> usersList = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.sync),
-          onPressed: () async {
-            getDataFromApi();
-          },
+          onPressed: () async {},
         ),
         appBar: _Appbar(),
-        body: ListView.builder(
-          itemBuilder: (context, index) {
-            return null;
+        body: FutureBuilder(
+          future: getDataFromApi(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return _listeBuilder(snapshot.data!);
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
           },
         ));
+  }
+
+  ListView _listeBuilder(List<Users> userList) {
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text("${userList[index].title}"),
+          leading: CircleAvatar(
+            child: Text("${userList[index].id}"),
+          ),
+        );
+      },
+      itemCount: userList.length,
+    );
   }
 
   AppBar _Appbar() {
@@ -37,38 +53,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // getLocalData() async {
-  //   String veri =
-  //       await DefaultAssetBundle.of(context).loadString("assets/users.json");
+  Future<List<Users>?> getDataFromApi() async {
+    Response cevap =
+        await http.get(Uri.parse("https://jsonplaceholder.typicode.com/posts"));
+    List<dynamic> dartOldu = jsonDecode(cevap.body);
 
-  //   List<dynamic> degisken = jsonDecode(veri);
-  //   List<User> users = degisken.map((e) => User.fromJson(e)).toList();
-
-  //   setState(() {
-  //     listem = users;
-  //   });
-  // }
-
-  getDataFromApi() async {
-    try {
-      Response cevap = await http
-          .get(Uri.parse("https://jsonplaceholder.typicode.com/posts"));
-      List<dynamic> dartOldu = jsonDecode(cevap.body);
-
-      if (cevap.statusCode == 200) {
-        List<Users> evet = dartOldu
-            .map(
-              (e) => Users.fromJson(e),
-            )
-            .toList();
-        setState(() {
-          usersList = evet;
-        });
-      } else {
-        print("False connection");
-      }
-    } catch (e) {
-      print(e);
+    if (cevap.statusCode == 200) {
+      List<Users> evet = dartOldu
+          .map(
+            (e) => Users.fromJson(e),
+          )
+          .toList();
+      return evet;
+    } else {
+      print("False connection");
+      return null;
     }
   }
 }
