@@ -1,0 +1,1 @@
+enum Tasktype{ticktock,netflix,colors}
