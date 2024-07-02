@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +11,7 @@ import 'package:html/parser.dart' as htmlParser;
 import 'package:share_plus/share_plus.dart';
 
 class CalendarPage extends StatefulWidget {
-  CalendarPage({super.key, required this.colors});
+  const CalendarPage({super.key, required this.colors});
   final Color? colors;
 
   @override

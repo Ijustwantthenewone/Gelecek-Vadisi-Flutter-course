@@ -5,7 +5,7 @@ import 'package:prayertimes/Services/id.dart';
 import 'package:prayertimes/Services/prayer_service.dart';
 import 'package:prayertimes/models/prayermodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async'; // Timer kullanmak için ekleyin
+import 'dart:async';
 
 class Prayertimes extends StatefulWidget {
   Prayertimes({super.key, required this.color});
@@ -36,16 +36,17 @@ class _PrayertimesState extends State<Prayertimes> {
   String? seher;
   String? kible;
 
-  Timer? _timer; // Timer değişkeni ekleyin
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _checkSharedPreferences();
-    _startTimer(); // Timer'ı başlat
+    _startTimer();
   }
 
   void _checkSharedPreferences() async {
+    
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('saga') == null) {
       _getir(16741);
@@ -133,7 +134,7 @@ class _PrayertimesState extends State<Prayertimes> {
     );
   }
 
-  Future<void> _getir(int id) async {
+  Future<void> _getir(int? id) async {
     PrayerService prayerService = PrayerService();
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd').format(now);
@@ -230,7 +231,6 @@ class _PrayertimesState extends State<Prayertimes> {
       return nowTime.isAtSameMomentAs(startTime) ||
           nowTime.isAfter(startTime) && nowTime.isBefore(endTime);
     } else {
-      // Gece yarısından sonra geçen vakitler için
       return nowTime.isAtSameMomentAs(startTime) ||
           nowTime.isAfter(startTime) ||
           nowTime.isBefore(endTime);
@@ -245,10 +245,11 @@ class _PrayertimesState extends State<Prayertimes> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Timer'ı iptal et
+    _timer?.cancel();
     super.dispose();
   }
-} 
+}
+
 
 
 /*

@@ -16,7 +16,7 @@ class _PageControlState extends State<PageControl> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
+    final List<Widget> pages = [
       KeepAlivePage(child: CalendarPage(colors: _colors[_currentIndex])),
       KeepAlivePage(child: Prayertimes(color: _colors[_currentIndex])),
     ];
@@ -29,7 +29,7 @@ class _PageControlState extends State<PageControl> {
           });
         },
         controller: _pageController,
-        children: _pages,
+        children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
@@ -61,7 +61,7 @@ class _PageControlState extends State<PageControl> {
 class KeepAlivePage extends StatefulWidget {
   final Widget child;
 
-  const KeepAlivePage({Key? key, required this.child}) : super(key: key);
+  const KeepAlivePage({super.key, required this.child});
 
   @override
   _KeepAlivePageState createState() => _KeepAlivePageState();

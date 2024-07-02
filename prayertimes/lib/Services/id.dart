@@ -12,15 +12,18 @@ class IdService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await _getir();
-    String _url =
+    String url =
         "https://www.turktakvim.com/XMLservis.php?tip=konum&latitude=$latitude&longitude=$longitude&limit=10&radius=45&format=json";
 
-    var r1 = await http.get(Uri.parse(_url));
+    var r1 = await http.get(Uri.parse(url));
     Map<String, dynamic> idler = json.decode(r1.body);
     SehirId s1 = SehirId.fromJson(idler);
+
     String? deger = s1.sehir![0].iD;
+
     int? saga = int.tryParse(deger!);
     await prefs.setInt('saga', saga!);
+    print(s1.sehir![0].cityNameTR);
     return saga;
   }
 
