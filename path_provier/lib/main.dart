@@ -7,8 +7,7 @@ import 'package:path_provier/file_service.dart';
 import 'package:path_provier/user_model.dart';
 
 //1:01:56 https://drive.google.com/file/d/1FBV-FWG88rJEz2U2bxiyLgNsojGG1yTx/view
-//Hocam bu path provider documanın doğru dürüst hiç bir bilgilendirme yok constr çağırma dışında siz nasıl öğrendiniz ? ful sizin söylediklerinize göre yaptım ama sadece anladım
-//ezber olmadı ödevi yaptım
+
 void main() {
   runApp(const Page1());
 }
