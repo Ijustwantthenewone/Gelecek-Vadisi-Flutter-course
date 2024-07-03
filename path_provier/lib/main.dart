@@ -3,8 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path_provier/file_service.dart';
 import 'package:path_provier/user_model.dart';
+
 //1:01:56 https://drive.google.com/file/d/1FBV-FWG88rJEz2U2bxiyLgNsojGG1yTx/view
+//Hocam bu path provider documanın doğru dürüst hiç bir bilgilendirme yok constr çağırma dışında siz nasıl öğrendiniz ? ful sizin söylediklerinize göre yaptım ama sadece anladım
+//ezber olmadı ödevi yaptım
 void main() {
   runApp(const Page1());
 }
@@ -47,24 +51,21 @@ class Page2 extends StatelessWidget {
           children: [
             ElevatedButton(
                 onPressed: () async {
-                  Directory appDocumentsDir =
-                      await getApplicationDocumentsDirectory();
-                  String path = "${appDocumentsDir.path}/local_data_file.json";
-                  File file = File(path);
-
-                  await file.writeAsString(
-                    jsonEncode(
-                      user1.toJson(),
-                    ),
-                  );
-
+                  FileService.saveData(user1);
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Veriler Kaydedildi")));
+                      const SnackBar(content: Text("Veriler Kaydedildi")));
                 },
                 child: const Text("Verileri kaydet")),
             ElevatedButton(
-                onPressed: () {}, child: const Text("Verileri yazdır")),
-            ElevatedButton(onPressed: () {}, child: const Text("Verileri sil")),
+                onPressed: () {
+                  FileService.readData(context);
+                },
+                child: const Text("Verileri Oku")),
+            ElevatedButton(
+                onPressed: () async {
+                  FileService.deleteData(context);
+                },
+                child: const Text("Verileri sil")),
           ],
         ),
       ),
