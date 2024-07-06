@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -124,7 +123,10 @@ class _CalendarPageState extends State<CalendarPage> {
         children: [
           Text(
             formattedDate,
-            style: TextStyle(fontSize: 22.sp, color: Colors.white),
+            style: TextStyle(
+                fontSize: 22.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
           ),
         ],
       ),

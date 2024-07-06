@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prayertimes/Pages/page_control.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 // sayfa geçişlerinde yeniden yüklemeye çalışıyor ne yapmalıyım
 void main() {
-  runApp(const Go());
+ 
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const Go());
+  });
 }
+
 
 class Go extends StatelessWidget {
   const Go({super.key});

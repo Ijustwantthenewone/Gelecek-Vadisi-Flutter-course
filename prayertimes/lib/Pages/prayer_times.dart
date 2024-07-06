@@ -16,6 +16,7 @@ class Prayertimes extends StatefulWidget {
 }
 
 class _PrayertimesState extends State<Prayertimes> {
+  IdService s1 = IdService();
   Attributes? attributes;
   String? imsak;
   String? sabah;
@@ -35,7 +36,9 @@ class _PrayertimesState extends State<Prayertimes> {
   String? teheccud;
   String? seher;
   String? kible;
+  String? appBarSehir = "İstanbul";
 
+  bool _isLoading = false;
   Timer? _timer;
 
   @override
@@ -46,10 +49,15 @@ class _PrayertimesState extends State<Prayertimes> {
   }
 
   void _checkSharedPreferences() async {
-    
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      appBarSehir = prefs.getString('sehir') ?? 'İstanbul';
+    });
     if (prefs.getInt('saga') == null) {
       _getir(16741);
+    } else {
+      int? newId = prefs.getInt('saga');
+      _getir(newId);
     }
   }
 
@@ -62,67 +70,100 @@ class _PrayertimesState extends State<Prayertimes> {
       appBar: _appbar(widget.color),
       body: Center(
         child: SingleChildScrollView(
-          child: imsak == null
-              ? const CircularProgressIndicator(
-                  color: Colors.teal,
-                )
-              : Column(
+          child: _isLoading
+              ? Column(
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(20.r),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: Colors.teal[100],
-                      ),
-                      child: Column(
-                        children: [
-                          ...vakitler.entries.map(
-                            (e) {
-                              return SizedBox(
-                                width: 250.r,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: _isCurrentTime(e.key)
-                                        ? Colors.white
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: EdgeInsets.all(8.r),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        e.key,
-                                        style: TextStyle(
-                                            fontSize: 25.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        e.value,
-                                        style: TextStyle(
-                                            fontSize: 25.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                    const CircularProgressIndicator(
+                      color: Colors.teal,
                     ),
-                    IconButton(
-                      iconSize: 45.r,
-                      onPressed: () async {},
-                      icon: const Icon(
-                        Icons.location_on,
-                        color: Colors.teal,
-                      ),
+                    SizedBox(height: 30.r),
+                    Text(
+                      'Konum yükleniyor..',
+                      style: TextStyle(
+                          fontSize: 18.sp, fontWeight: FontWeight.bold),
                     ),
                   ],
-                ),
+                )
+              : imsak == null
+                  ? const CircularProgressIndicator(
+                      color: Colors.teal,
+                    )
+                  : Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(20.r),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40),
+                            color: Colors.teal[100],
+                          ),
+                          child: Column(
+                            children: [
+                              ...vakitler.entries.map(
+                                (e) {
+                                  return SizedBox(
+                                    width: 250.r,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: _isCurrentTime(e.key)
+                                            ? Colors.yellowAccent
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: EdgeInsets.all(8.r),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            e.key,
+                                            style: TextStyle(
+                                                fontSize: 25.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            e.value,
+                                            style: TextStyle(
+                                                fontSize: 25.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          iconSize: 45.r,
+                          onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            int? newId = await s1.getId();
+                            if (newId != null) {
+                              await _getir(newId);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                      'Konum izni verilmedi, uygulamanın ayarlarından konum izni vermelisiniz.'),
+                                ),
+                              );
+                            }
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.location_on,
+                            color: Colors.teal,
+                          ),
+                        ),
+                      ],
+                    ),
         ),
       ),
     );
@@ -131,11 +172,21 @@ class _PrayertimesState extends State<Prayertimes> {
   AppBar _appbar(Color? color) {
     return AppBar(
       backgroundColor: color,
+      title: Center(
+        child: Text(
+          appBarSehir!,
+          style: TextStyle(
+              fontSize: 22.sp,
+              color: Colors.white,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 
   Future<void> _getir(int? id) async {
     PrayerService prayerService = PrayerService();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd').format(now);
 
@@ -144,7 +195,11 @@ class _PrayertimesState extends State<Prayertimes> {
     List<Vakit> prayerTimes =
         await prayerService.cek(id.toString(), desiredDate);
 
+    String? sehir = prefs.getString("sehir");
+
     setState(() {
+      appBarSehir = sehir ?? "İstanbul";
+
       for (Vakit prayerTime in prayerTimes) {
         attributes = prayerTime.attributes;
         imsak = prayerTime.imsak;
@@ -249,8 +304,6 @@ class _PrayertimesState extends State<Prayertimes> {
     super.dispose();
   }
 }
-
-
 
 /*
  int? id = await s1.getId();
