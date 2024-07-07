@@ -93,10 +93,10 @@ class _PrayertimesState extends State<Prayertimes> {
                                     width: 250.r,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: _isCurrentTime(e.key) != null
+                                        color: _isCurrentTime11(e.key) != null
                                             ? Colors.yellowAccent
                                             : Colors.transparent,
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
                                       padding: EdgeInsets.all(8.r),
                                       child: Row(
@@ -273,6 +273,20 @@ class _PrayertimesState extends State<Prayertimes> {
         break;
     }
 
+    if (result == null) {
+      // Eğer şu anki zaman bu vaktin dışındaysa, bir sonraki vakti bulalım
+      List<String> prayerKeys = vakitler.keys.toList();
+      int currentIndex = prayerKeys.indexOf(prayer);
+      for (int i = currentIndex + 1; i < prayerKeys.length; i++) {
+        if (_checkTimeBetween(currentTime, vakitler[prayerKeys[i]]!,
+            vakitler[prayerKeys[(i + 1) % prayerKeys.length]]!)) {
+          result =
+              _calculateRemainingTime(currentTime, vakitler[prayerKeys[i]]!);
+          break;
+        }
+      }
+    }
+
     return result;
   }
 
@@ -302,8 +316,8 @@ class _PrayertimesState extends State<Prayertimes> {
     Duration difference;
 
     if (endDateTimeToday.isBefore(now)) {
- 
-      difference = endDateTimeToday.add(const Duration(days: 1)).difference(now);
+      difference =
+          endDateTimeToday.add(const Duration(days: 1)).difference(now);
     } else {
       difference = endDateTimeToday.difference(now);
     }
@@ -315,28 +329,36 @@ class _PrayertimesState extends State<Prayertimes> {
     final now = DateTime.now();
     final currentTime = DateFormat('HH:mm').format(now);
 
+    List<String> prayerKeys = vakitler.keys.toList();
+    prayerKeys.sort((a, b) => DateFormat('HH:mm')
+        .parse(vakitler[a]!)
+        .compareTo(DateFormat('HH:mm').parse(vakitler[b]!)));
+
     String? nextPrayerTime;
 
-    for (var prayer in vakitler.keys) {
-      final remainingTime = _isCurrentTime(prayer);
-      if (remainingTime != null) {
-        nextPrayerTime = '$prayer vaktine kalan: $remainingTime';
+    for (String prayer in prayerKeys) {
+      String prayerTime = vakitler[prayer]!;
+
+      if (DateFormat('HH:mm').parse(prayerTime).isAfter(now)) {
+        nextPrayerTime =
+            '$prayer vaktine kalan: ${_calculateRemainingTime(currentTime, prayerTime)}';
         break;
       }
     }
 
     if (nextPrayerTime == null) {
-      final nextPrayer = vakitler.keys.firstWhere(
-        (prayer) {
-          final prayerTime = vakitler[prayer]!;
-          return DateFormat('HH:mm').parse(prayerTime).isAfter(now);
-        },
-        orElse: () => vakitler.keys.first,
-      );
+      // Eğer hiçbir gelecek namaz vakti bulunmazsa, bu günün son namaz vakti geçmiş demektir
+      for (String prayer in prayerKeys) {
+        String prayerTime = vakitler[prayer]!;
 
-      final nextPrayerTimeString = vakitler[nextPrayer]!;
-      nextPrayerTime =
-          '$nextPrayer vaktine kalan: ${_calculateRemainingTime(currentTime, nextPrayerTimeString)}';
+        if (_checkTimeBetween(currentTime, '00:00', prayerTime) ||
+            _checkTimeBetween(
+                currentTime, vakitler[prayerKeys.last]!, '23:59')) {
+          nextPrayerTime =
+              '$prayer vaktine kalan: ${_calculateRemainingTime(currentTime, prayerTime)}';
+          break;
+        }
+      }
     }
 
     return nextPrayerTime;
@@ -353,9 +375,56 @@ class _PrayertimesState extends State<Prayertimes> {
     _timer?.cancel();
     super.dispose();
   }
+
+  String? _isCurrentTime11(String prayer) {
+    final now = DateTime.now();
+    final currentTime = DateFormat('HH:mm').format(now);
+    String? result;
+
+    switch (prayer) {
+      case 'İmsak':
+        if (_checkTimeBetween(currentTime, imsak!, sabah!)) {
+          result = _calculateRemainingTime(currentTime, sabah!);
+        }
+        break;
+      case 'Sabah':
+        if (_checkTimeBetween(currentTime, sabah!, gunes!)) {
+          result = _calculateRemainingTime(currentTime, gunes!);
+        }
+        break;
+      case 'Güneş':
+        if (_checkTimeBetween(currentTime, gunes!, israk!)) {
+          result = _calculateRemainingTime(currentTime, israk!);
+        }
+        break;
+      case 'İşrak':
+        if (_checkTimeBetween(currentTime, israk!, ogle!)) {
+          result = _calculateRemainingTime(currentTime, ogle!);
+        }
+        break;
+      case 'Öğle':
+        if (_checkTimeBetween(currentTime, ogle!, ikindi!)) {
+          result = _calculateRemainingTime(currentTime, ikindi!);
+        }
+        break;
+      case 'İkindi':
+        if (_checkTimeBetween(currentTime, ikindi!, aksam!)) {
+          result = _calculateRemainingTime(currentTime, aksam!);
+        }
+        break;
+      case 'Akşam':
+        if (_checkTimeBetween(currentTime, aksam!, yatsi!)) {
+          result = _calculateRemainingTime(currentTime, yatsi!);
+        }
+        break;
+      case 'Yatsı':
+        if (_checkTimeBetween(currentTime, yatsi!, '23:59') ||
+            _checkTimeBetween(currentTime, '00:00', imsak!)) {
+          result = _calculateRemainingTime(currentTime, imsak!);
+        }
+        break;
+    }
+
+    return result;
+  }
 }
-
-
-/*
-şuanki zamana bakıp  imsak,sabah,güneş,işrak,öğle,ikindi,akşam,yatsı vakitlerine kalan süreyi yazılmasını istiyorum
-*/
