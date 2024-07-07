@@ -22,20 +22,10 @@ class _PrayertimesState extends State<Prayertimes> {
   String? sabah;
   String? gunes;
   String? israk;
-  String? dahve;
-  String? kerahet;
   String? ogle;
   String? ikindi;
-  String? asrisani;
-  String? isfirar;
   String? aksam;
-  String? istibak;
   String? yatsi;
-  String? isaisani;
-  String? geceyarisi;
-  String? teheccud;
-  String? seher;
-  String? kible;
   String? appBarSehir = "İstanbul";
 
   bool _isLoading = false;
@@ -62,7 +52,6 @@ class _PrayertimesState extends State<Prayertimes> {
   }
 
   Map<String, String> vakitler = {};
-  Map<String, String> vakitlerextra = {};
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +93,7 @@ class _PrayertimesState extends State<Prayertimes> {
                                     width: 250.r,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: _isCurrentTime(e.key)
+                                        color: _isCurrentTime(e.key) != null
                                             ? Colors.yellowAccent
                                             : Colors.transparent,
                                         borderRadius: BorderRadius.circular(10),
@@ -132,6 +121,16 @@ class _PrayertimesState extends State<Prayertimes> {
                                   );
                                 },
                               ),
+                              if (_getNextPrayerTime() != null)
+                                Padding(
+                                  padding: EdgeInsets.only(top: 20.r),
+                                  child: Text(
+                                    _getNextPrayerTime()!,
+                                    style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                             ],
                           ),
                         ),
@@ -206,20 +205,10 @@ class _PrayertimesState extends State<Prayertimes> {
         sabah = prayerTime.sabah;
         gunes = prayerTime.gunes;
         israk = prayerTime.israk;
-        dahve = prayerTime.dahve;
-        kerahet = prayerTime.kerahet;
         ogle = prayerTime.ogle;
         ikindi = prayerTime.ikindi;
-        asrisani = prayerTime.asrisani;
-        isfirar = prayerTime.isfirar;
         aksam = prayerTime.aksam;
-        istibak = prayerTime.istibak;
         yatsi = prayerTime.yatsi;
-        isaisani = prayerTime.isaisani;
-        geceyarisi = prayerTime.geceyarisi;
-        teheccud = prayerTime.teheccud;
-        seher = prayerTime.seher;
-        kible = prayerTime.kible;
       }
 
       vakitler = {
@@ -232,48 +221,59 @@ class _PrayertimesState extends State<Prayertimes> {
         "Akşam": aksam ?? 'Loading...',
         "Yatsı": yatsi ?? 'Loading...',
       };
-
-      vakitlerextra = {
-        "Dahve": dahve ?? 'Loading...',
-        "Kerahat": kerahet ?? 'Loading...',
-        "Öğle": ogle ?? 'Loading...',
-        "İkindi": ikindi ?? 'Loading...',
-        "İsfirar": isfirar ?? 'Loading...',
-        "İstibak": istibak ?? 'Loading...',
-        "İşâ-i Sânî": isaisani ?? 'Loading...',
-        "Gece yarısı": geceyarisi ?? 'Loading...',
-        "Teheccüd": teheccud ?? 'Loading...',
-        "Seher": seher ?? 'Loading...',
-        "Kıble": kible ?? 'Loading...',
-      };
     });
   }
 
-  bool _isCurrentTime(String prayer) {
+  String? _isCurrentTime(String prayer) {
     final now = DateTime.now();
     final currentTime = DateFormat('HH:mm').format(now);
+    String? result;
 
     switch (prayer) {
       case 'İmsak':
-        return _checkTimeBetween(currentTime, imsak!, sabah!);
+        if (_checkTimeBetween(currentTime, imsak!, sabah!)) {
+          result = _calculateRemainingTime(currentTime, sabah!);
+        }
+        break;
       case 'Sabah':
-        return _checkTimeBetween(currentTime, sabah!, gunes!);
+        if (_checkTimeBetween(currentTime, sabah!, gunes!)) {
+          result = _calculateRemainingTime(currentTime, gunes!);
+        }
+        break;
       case 'Güneş':
-        return _checkTimeBetween(currentTime, gunes!, israk!);
+        if (_checkTimeBetween(currentTime, gunes!, israk!)) {
+          result = _calculateRemainingTime(currentTime, israk!);
+        }
+        break;
       case 'İşrak':
-        return _checkTimeBetween(currentTime, israk!, ogle!);
+        if (_checkTimeBetween(currentTime, israk!, ogle!)) {
+          result = _calculateRemainingTime(currentTime, ogle!);
+        }
+        break;
       case 'Öğle':
-        return _checkTimeBetween(currentTime, ogle!, ikindi!);
+        if (_checkTimeBetween(currentTime, ogle!, ikindi!)) {
+          result = _calculateRemainingTime(currentTime, ikindi!);
+        }
+        break;
       case 'İkindi':
-        return _checkTimeBetween(currentTime, ikindi!, aksam!);
+        if (_checkTimeBetween(currentTime, ikindi!, aksam!)) {
+          result = _calculateRemainingTime(currentTime, aksam!);
+        }
+        break;
       case 'Akşam':
-        return _checkTimeBetween(currentTime, aksam!, yatsi!);
+        if (_checkTimeBetween(currentTime, aksam!, yatsi!)) {
+          result = _calculateRemainingTime(currentTime, yatsi!);
+        }
+        break;
       case 'Yatsı':
-        return _checkTimeBetween(currentTime, yatsi!, '23:59') ||
-            _checkTimeBetween(currentTime, '00:00', imsak!);
-      default:
-        return false;
+        if (_checkTimeBetween(currentTime, yatsi!, '23:59') ||
+            _checkTimeBetween(currentTime, '00:00', imsak!)) {
+          result = _calculateRemainingTime(currentTime, imsak!);
+        }
+        break;
     }
+
+    return result;
   }
 
   bool _checkTimeBetween(String currentTime, String start, String end) {
@@ -284,12 +284,62 @@ class _PrayertimesState extends State<Prayertimes> {
 
     if (startTime.isBefore(endTime)) {
       return nowTime.isAtSameMomentAs(startTime) ||
-          nowTime.isAfter(startTime) && nowTime.isBefore(endTime);
+          (nowTime.isAfter(startTime) && nowTime.isBefore(endTime));
     } else {
       return nowTime.isAtSameMomentAs(startTime) ||
           nowTime.isAfter(startTime) ||
           nowTime.isBefore(endTime);
     }
+  }
+
+  String _calculateRemainingTime(String currentTime, String endTime) {
+    final format = DateFormat('HH:mm');
+    final now = format.parse(currentTime);
+    final endDateTime = format.parse(endTime);
+    final endDateTimeToday = DateTime(
+        now.year, now.month, now.day, endDateTime.hour, endDateTime.minute);
+
+    Duration difference;
+
+    if (endDateTimeToday.isBefore(now)) {
+ 
+      difference = endDateTimeToday.add(const Duration(days: 1)).difference(now);
+    } else {
+      difference = endDateTimeToday.difference(now);
+    }
+
+    return '${difference.inHours} saat ${difference.inMinutes.remainder(60)} dakika';
+  }
+
+  String? _getNextPrayerTime() {
+    final now = DateTime.now();
+    final currentTime = DateFormat('HH:mm').format(now);
+
+    String? nextPrayerTime;
+
+    for (var prayer in vakitler.keys) {
+      final remainingTime = _isCurrentTime(prayer);
+      if (remainingTime != null) {
+        nextPrayerTime = '$prayer vaktine kalan: $remainingTime';
+        break;
+      }
+    }
+
+    if (nextPrayerTime == null) {
+      final nextPrayer = vakitler.keys.firstWhere(
+        (prayer) {
+          final prayerTime = vakitler[prayer]!;
+          return DateFormat('HH:mm').parse(prayerTime).isAfter(now);
+        },
+        orElse: () => vakitler.keys.first,
+      );
+
+      final nextPrayerTimeString = vakitler[nextPrayer]!;
+      nextPrayerTime =
+          '$nextPrayer vaktine kalan: ${_calculateRemainingTime(currentTime, nextPrayerTimeString)}';
+    }
+
+    return nextPrayerTime;
   }
 
   void _startTimer() {
@@ -305,51 +355,7 @@ class _PrayertimesState extends State<Prayertimes> {
   }
 }
 
-/*
- int? id = await s1.getId();
-                  await prefs.setInt('id', id!);
-
-                  if (prefs.getInt('id') == null) {
-      _getir("16741");
-      await prefs.setInt('id', 16741);
-      print(imsak);
-    } else {
-      print("asd");
-    }
-*/
 
 /*
-Card(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 0.0,
-                                horizontal: 0.0), // Kart kenar boşlukları
-                            color: Colors.teal,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 12.0),
-                                child: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.85, // Kartın genişliğini daralt
-                                    child: ListTile(
-                                        contentPadding: EdgeInsets
-                                            .zero, // İç kenar boşluklarını sıfırla
-                                        trailing: Text(
-                                          e.value ?? "Bilinmiyor",
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        title: Text(
-                                          e.key,
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        )))));
-                      },
+şuanki zamana bakıp  imsak,sabah,güneş,işrak,öğle,ikindi,akşam,yatsı vakitlerine kalan süreyi yazılmasını istiyorum
 */
