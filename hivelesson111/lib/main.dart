@@ -3,7 +3,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:hivelesson/model/user_model.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized(); // runApp'den önce işlem yapıcaksak bu bir kalıp
   await Hive.initFlutter();
   Hive.registerAdapter(UserModelAdapter());
 
@@ -33,7 +33,7 @@ class Page1 extends StatelessWidget {
           children: [
             ElevatedButton(
                 onPressed: () async {
-                  Box b1 = await Hive.openBox("Users");
+                  Box<dynamic> b1 = await Hive.openBox("Users");
 
                   await b1
                       .putAll({"Lastname": "Yağmur", "School": "High School"});
