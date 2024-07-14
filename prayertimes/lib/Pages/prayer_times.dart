@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
+import 'package:prayertimes/Services/calendar_service.dart';
 import 'package:prayertimes/Services/id.dart';
 import 'package:prayertimes/Services/prayer_service.dart';
+import 'package:prayertimes/models/calendarmodel.dart';
 import 'package:prayertimes/models/prayermodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -18,6 +21,37 @@ class Prayertimes extends StatefulWidget {
 class _PrayertimesState extends State<Prayertimes> {
   IdService s1 = IdService();
   Attributes? attributes;
+  //extra
+  String? dahve;
+  String? kerahet;
+  String? asrisani;
+  String? isfirar;
+  String? istibak;
+  String? isaisani;
+  String? geceyarisi;
+  String? teheccud;
+  String? seher;
+  String? kible;
+  //extra
+
+  //takvimsözleri
+
+  Veri? takvimModel;
+  String? yazi;
+  String? baslik;
+  String? miladiTarih;
+  String? hicriTarih;
+  int? hicriSemsi;
+  String? rumi;
+  String? hizirKasim;
+  String? gunDurumu;
+  String? ezaniDurum;
+  String? gununSozu;
+  String? gununOlayi;
+  String? isimYemek;
+
+  //takvimsözleri
+
   String? imsak;
   String? sabah;
   String? gunes;
@@ -52,9 +86,11 @@ class _PrayertimesState extends State<Prayertimes> {
   }
 
   Map<String, String> vakitler = {};
+  Map<String, String> ekstraVakitler = {};
 
   @override
   Widget build(BuildContext context) {
+    gelenVeriler();
     return Scaffold(
       appBar: _appbar(widget.color),
       body: Center(
@@ -121,50 +157,221 @@ class _PrayertimesState extends State<Prayertimes> {
                                   );
                                 },
                               ),
-                              if (_getNextPrayerTime() != null)
-                                Padding(
-                                  padding: EdgeInsets.only(top: 20.r),
-                                  child: Text(
-                                    _getNextPrayerTime()!,
-                                    style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
                             ],
                           ),
                         ),
-                        IconButton(
-                          iconSize: 45.r,
-                          onPressed: () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            int? newId = await s1.getId();
-                            if (newId != null) {
-                              await _getir(newId);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  backgroundColor: Colors.red,
-                                  content: Text(
-                                      'Konum izni verilmedi, uygulamanın ayarlarından konum izni vermelisiniz.'),
+                        if (_getNextPrayerTime() != null)
+                          Padding(
+                            padding: EdgeInsets.only(top: 20.r),
+                            child: Text(
+                              _getNextPrayerTime()!,
+                              style: TextStyle(
+                                  fontSize: 18.sp, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              iconSize: 45.r,
+                              onPressed: () async {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                int? newId = await s1.getId();
+                                if (newId != null) {
+                                  await _getir(newId);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text(
+                                          'Konum izni verilmedi, uygulamanın ayarlarından konum izni vermelisiniz.'),
+                                    ),
+                                  );
+                                }
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.location_on,
+                                color: Colors.teal,
+                              ),
+                            ),
+                            IconButton(
+                              iconSize: 45.r,
+                              onPressed: () async {
+                                await _showmyDialog();
+                              },
+                              icon: const Icon(
+                                Icons.view_timeline_sharp,
+                                color: Colors.teal,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          width: 290.r,
+                          height: 133.r,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.teal[100]!, width: 7.r),
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: SingleChildScrollView(
+                            child: ListBody(
+                              children: [
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">$gununSozu</h3>
+
+        ''',
                                 ),
-                              );
-                            }
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.location_on,
-                            color: Colors.teal,
+                                SizedBox(
+                                  height: 15.r,
+                                ),
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">$gununOlayi</h3>
+
+        ''',
+                                ),
+                                SizedBox(
+                                  height: 15.r,
+                                ),
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">$ezaniDurum</h3>
+
+        ''',
+                                ),
+                                SizedBox(
+                                  height: 15.r,
+                                ),
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">$gunDurumu</h3>
+
+        ''',
+                                ),
+                                SizedBox(
+                                  height: 15.r,
+                                ),
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">$hizirKasim</h3>
+
+        ''',
+                                ),
+                                SizedBox(
+                                  height: 15.r,
+                                ),
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">Rumi $rumi</h3>
+
+        ''',
+                                ),
+                                SizedBox(
+                                  height: 15.r,
+                                ),
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">Hicrî Şemsî $hicriSemsi</h3>
+
+        ''',
+                                ),
+                                SizedBox(
+                                  height: 15.r,
+                                ),
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">Hicrî Tarih $hicriTarih</h3>
+
+        ''',
+                                ),
+                                SizedBox(
+                                  height: 15.r,
+                                ),
+                                HtmlWidget(
+                                  '''
+    <h3 style="text-align: center; color: black;">Miladi Tarih $miladiTarih</h3>
+
+        ''',
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
         ),
       ),
+    );
+  }
+
+  _showmyDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.tealAccent,
+          title: Text(
+            "Diğer vakitler",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 40.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                ...ekstraVakitler.entries.map(
+                  (e) {
+                    return SizedBox(
+                      width: 250.r,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            e.key,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 25.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            e.value,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 25.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                "Geri",
+                style: TextStyle(fontSize: 20.sp, color: Colors.black),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -201,6 +408,19 @@ class _PrayertimesState extends State<Prayertimes> {
 
       for (Vakit prayerTime in prayerTimes) {
         attributes = prayerTime.attributes;
+        //extra
+        dahve = prayerTime.dahve;
+        kerahet = prayerTime.kerahet;
+        asrisani = prayerTime.asrisani;
+        isfirar = prayerTime.isfirar;
+        istibak = prayerTime.istibak;
+        isaisani = prayerTime.isaisani;
+        geceyarisi = prayerTime.geceyarisi;
+        teheccud = prayerTime.teheccud;
+        seher = prayerTime.seher;
+        kible = prayerTime.kible;
+        //extra
+
         imsak = prayerTime.imsak;
         sabah = prayerTime.sabah;
         gunes = prayerTime.gunes;
@@ -220,6 +440,19 @@ class _PrayertimesState extends State<Prayertimes> {
         "İkindi": ikindi ?? 'Loading...',
         "Akşam": aksam ?? 'Loading...',
         "Yatsı": yatsi ?? 'Loading...',
+      };
+
+      ekstraVakitler = {
+        "Dahve": dahve ?? 'Loading...',
+        "Kerahet": kerahet ?? 'Loading...',
+        "Asrisani": asrisani ?? 'Loading...',
+        "İsfirar": isfirar ?? 'Loading...',
+        "İstibak": istibak ?? 'Loading...',
+        "İsaisani": isaisani ?? 'Loading...',
+        "Geceyarisi": geceyarisi ?? 'Loading...',
+        "Teheccud": teheccud ?? 'Loading...',
+        "Seher": seher ?? 'Loading...',
+        "Kıble": kible ?? 'Loading...',
       };
     });
   }
@@ -322,7 +555,13 @@ class _PrayertimesState extends State<Prayertimes> {
       difference = endDateTimeToday.difference(now);
     }
 
-    return '${difference.inHours} saat ${difference.inMinutes.remainder(60)} dakika';
+    int hours = difference.inHours;
+    int minutes = difference.inMinutes.remainder(60);
+
+    String hoursText = hours > 0 ? '$hours saat ' : '';
+    String minutesText = minutes > 0 ? '$minutes dakika' : '';
+
+    return hoursText + minutesText;
   }
 
   String? _getNextPrayerTime() {
@@ -341,7 +580,7 @@ class _PrayertimesState extends State<Prayertimes> {
 
       if (DateFormat('HH:mm').parse(prayerTime).isAfter(now)) {
         nextPrayerTime =
-            '$prayer vaktine kalan: ${_calculateRemainingTime(currentTime, prayerTime)}';
+            '$prayer vaktine kalan ➜ ${_calculateRemainingTime(currentTime, prayerTime)}';
         break;
       }
     }
@@ -355,7 +594,7 @@ class _PrayertimesState extends State<Prayertimes> {
             _checkTimeBetween(
                 currentTime, vakitler[prayerKeys.last]!, '23:59')) {
           nextPrayerTime =
-              '$prayer vaktine kalan: ${_calculateRemainingTime(currentTime, prayerTime)}';
+              '$prayer vaktine kalan ➜ ${_calculateRemainingTime(currentTime, prayerTime)}';
           break;
         }
       }
@@ -426,5 +665,26 @@ class _PrayertimesState extends State<Prayertimes> {
     }
 
     return result;
+  }
+
+  gelenVeriler() async {
+    Calendarservice c1 = Calendarservice();
+    takvimModel = await c1.cek();
+    yazi = takvimModel!.arkayuz!.yazi;
+    baslik = takvimModel!.arkayuz!.baslik;
+    miladiTarih = takvimModel!.miladiTarih;
+    hicriTarih = takvimModel!.hicriTarih;
+    hicriSemsi = takvimModel!.hicriSemsi;
+    rumi = takvimModel!.rumi;
+    hizirKasim = takvimModel!.hizirKasim;
+    gunDurumu = takvimModel!.gunDurumu;
+    ezaniDurum = takvimModel!.ezaniDurum;
+    gununSozu = takvimModel!.gununSozu;
+    gununOlayi = takvimModel!.gununOlayi;
+    isimYemek = takvimModel!.isimYemek;
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

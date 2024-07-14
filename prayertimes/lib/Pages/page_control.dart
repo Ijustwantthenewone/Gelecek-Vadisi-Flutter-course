@@ -10,9 +10,9 @@ class PageControl extends StatefulWidget {
 }
 
 class _PageControlState extends State<PageControl> {
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 1);
   final List<Color?> _colors = [Colors.pinkAccent, Colors.teal];
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {

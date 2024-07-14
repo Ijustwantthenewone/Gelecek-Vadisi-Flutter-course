@@ -69,18 +69,6 @@ class _CalendarPageState extends State<CalendarPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                            onPressed: () async {
-                              await _showmyDialog();
-                            },
-                            icon: Icon(
-                              size: 40.r,
-                              Icons.article_rounded,
-                              color: Colors.pinkAccent,
-                            )),
-                        SizedBox(
-                          width: 10.r,
-                        ),
-                        IconButton(
                             onPressed: () {
                               _showDatePicker();
                             },
@@ -152,59 +140,6 @@ class _CalendarPageState extends State<CalendarPage> {
     if (mounted) {
       setState(() {});
     }
-  }
-
-  _showmyDialog() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.pinkAccent,
-          title: Text(
-            "Diğer bilgiler",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 40.sp,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: [
-                HtmlWidget(
-                  '''
-          <h3 style="color: white;">$gununOlayi</h3>
-        ''',
-                ),
-                const SizedBox(
-                  height: 15.0,
-                ),
-                HtmlWidget(
-                  '''
-          <h3 style="color: white;">$gununSozu</h3>
-        ''',
-                ),
-                SizedBox(
-                  height: 15.r,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: Text(
-                "Geri",
-                style: TextStyle(fontSize: 14.sp, color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      },
-    );
   }
 
   void shareHtml(BuildContext context) {
