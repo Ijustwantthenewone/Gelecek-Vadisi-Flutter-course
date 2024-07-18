@@ -1,0 +1,4 @@
+#Thu Jan 11 21:22:58 TRT 2024
+base.0=C\:\\Flutter_Bootcamp_Programi_Dart_2023\\kisi_uygulamasi\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

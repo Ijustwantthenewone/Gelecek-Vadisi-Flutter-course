@@ -1,0 +1,3 @@
+enum Isimler{
+  Ahmet,Mehmet
+}
