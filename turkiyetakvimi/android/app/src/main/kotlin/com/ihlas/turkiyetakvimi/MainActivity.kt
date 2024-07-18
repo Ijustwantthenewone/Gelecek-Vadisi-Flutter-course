@@ -1,4 +1,4 @@
-package com.example.prayertimes
+package com.ihlas.turkiyetakvimi
 
 import io.flutter.embedding.android.FlutterActivity
 
