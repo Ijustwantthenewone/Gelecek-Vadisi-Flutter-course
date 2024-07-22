@@ -14,47 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1014162331467-6jq61fvqoire12cgsrcktsr4rbh4b1qa.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAyOSuVm5qJs5fnIQku4L4UZupD3DfIf64"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1014162331467-6jq61fvqoire12cgsrcktsr4rbh4b1qa.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1014162331467-nnqfquelc3ulqarjhm7ckdn5954q23tu.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.firebaseLesson"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1014162331467:android:63b0845fa0dbdcad7ebace",
-        "android_client_info": {
-          "package_name": "com.example.firebase_lesson"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1014162331467-2ooaioqgujru6fimnqo7o2ee7nqgi7au.apps.googleusercontent.com",
+          "client_id": "1014162331467-qf00v72bm85drm030o4j49lj4sunfb03.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.firebase_lesson",
-            "certificate_hash": "af93222d71bc60e66e66caa71dcace672fce225b"
+            "package_name": "com.example.firebase_demo_2",
+            "certificate_hash": "7698306076c933601bac25bbf281ef4b6d19bde9"
           }
         },
         {

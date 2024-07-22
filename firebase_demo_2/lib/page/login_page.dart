@@ -128,9 +128,8 @@ class _LoginPageState extends State<LoginPage> {
               TextButton(
                   onPressed: () async {
                     await GoogleSignIn().signOut();
-                    print("Çıkış yapıldı");
                   },
-                  child: const Text("Çıkış yap")),
+                  child: const Text("Çıkış yap"))
             ],
           ),
         ),
@@ -158,18 +157,22 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _SignWithGoogle() async {
-    GoogleSignInAccount? account = await GoogleSignIn().signIn(); // burada hata alıyorum //1:06:56
-    if (account != null) {
-      var googleAuth = await account.authentication;
+    GoogleSignInAccount? GoogleaccountSign = await GoogleSignIn().signIn();
+    if (GoogleaccountSign != null) {
+      GoogleSignInAuthentication bilgiler =
+          await GoogleaccountSign.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+      OAuthCredential se = GoogleAuthProvider.credential(
+        accessToken: bilgiler.accessToken,
+        idToken: bilgiler.idToken,
       );
+      await FirebaseAuth.instance.signInWithCredential(se);
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ));
     }
   }
 }
