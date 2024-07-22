@@ -20,16 +20,15 @@ class HomePage extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text("Ana Sayfa"),),
+      appBar: AppBar(title: const Text("Ana Sayfa"),),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Ana Sayfa"),
+            const Text("Ana Sayfa"),
             ElevatedButton(onPressed: (){
-
               user.sendEmailVerification();
-            }, child: Text("E-Posta doğrula"))
+            }, child: const Text("E-Posta doğrula"))
           ],
         ),
       ),

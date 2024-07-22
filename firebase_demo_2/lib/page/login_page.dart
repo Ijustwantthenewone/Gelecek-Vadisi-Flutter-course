@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_demo_2/page/home_page.dart';
 import 'package:firebase_demo_2/page/register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -66,7 +67,9 @@ class _LoginPageState extends State<LoginPage> {
                         passwordVisible = !passwordVisible;
                       });
                     },
-                    icon: Icon(passwordVisible ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(passwordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off),
                   ),
                 ),
                 validator: (value) {
@@ -86,9 +89,10 @@ class _LoginPageState extends State<LoginPage> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    FirebaseAuth.instance.sendPasswordResetEmail(email: "gelecekvadisiorg@gmail.com");
+                    FirebaseAuth.instance.sendPasswordResetEmail(
+                        email: "gelecekvadisiorg@gmail.com");
                   },
-                  child: Text("Şifremi unuttum"),
+                  child: const Text("Şifremi unuttum"),
                 ),
               ),
               const SizedBox(height: 16),
@@ -101,6 +105,18 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 child: const Text("Giriş Yap"),
               ),
+              const Text("Veya şununla oturum aç"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                    onPressed: () {
+                      _SignWithGoogle();
+                    },
+                    icon: Image.asset(
+                      "assets/google.png",
+                      width: 44,
+                    )),
+              ),
               TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -108,7 +124,13 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => RegisterPage()),
                     );
                   },
-                  child: Text("Henüz bir hesabın yok mu?")),
+                  child: const Text("Henüz bir hesabın yok mu?")),
+              TextButton(
+                  onPressed: () async {
+                    await GoogleSignIn().signOut();
+                    print("Çıkış yapıldı");
+                  },
+                  child: const Text("Çıkış yap")),
             ],
           ),
         ),
@@ -124,15 +146,30 @@ class _LoginPageState extends State<LoginPage> {
         password: password,
       );
 
-
       // AuthCredential(providerId: providerId, signInMethod: signInMethod)
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } catch (e) {
       debugPrint("Bir hata meydana geldi! : $e");
+    }
+  }
+
+  void _SignWithGoogle() async {
+    GoogleSignInAccount? account = await GoogleSignIn().signIn(); // burada hata alıyorum //1:06:56
+    if (account != null) {
+      var googleAuth = await account.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
     }
   }
 }

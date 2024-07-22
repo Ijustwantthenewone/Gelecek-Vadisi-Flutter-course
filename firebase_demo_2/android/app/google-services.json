@@ -1,26 +1,87 @@
 {
   "project_info": {
-    "project_number": "734113758843",
-    "project_id": "flutter-2-2024-demo2",
-    "storage_bucket": "flutter-2-2024-demo2.appspot.com"
+    "project_number": "1014162331467",
+    "project_id": "naberdostum-3db34",
+    "storage_bucket": "naberdostum-3db34.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:734113758843:android:bb7a57d9e4038d52466cde",
+        "mobilesdk_app_id": "1:1014162331467:android:f50a64d2bb06645a7ebace",
         "android_client_info": {
           "package_name": "com.example.firebase_demo_2"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1014162331467-6jq61fvqoire12cgsrcktsr4rbh4b1qa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDP8xKr6qaMOG0-XVHytprU2eK2ouWpig8"
+          "current_key": "AIzaSyAyOSuVm5qJs5fnIQku4L4UZupD3DfIf64"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014162331467-6jq61fvqoire12cgsrcktsr4rbh4b1qa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1014162331467-nnqfquelc3ulqarjhm7ckdn5954q23tu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseLesson"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014162331467:android:63b0845fa0dbdcad7ebace",
+        "android_client_info": {
+          "package_name": "com.example.firebase_lesson"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1014162331467-2ooaioqgujru6fimnqo7o2ee7nqgi7au.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.firebase_lesson",
+            "certificate_hash": "af93222d71bc60e66e66caa71dcace672fce225b"
+          }
+        },
+        {
+          "client_id": "1014162331467-6jq61fvqoire12cgsrcktsr4rbh4b1qa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyOSuVm5qJs5fnIQku4L4UZupD3DfIf64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014162331467-6jq61fvqoire12cgsrcktsr4rbh4b1qa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1014162331467-nnqfquelc3ulqarjhm7ckdn5954q23tu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseLesson"
+              }
+            }
+          ]
         }
       }
     }
