@@ -7,18 +7,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = FirebaseAuth.instance.currentUser!;
-
-    user.updateDisplayName("Furkan Yağmur").then(
-      (value) {
-        debugPrint("user.email : ${user.email}");
-        debugPrint("user.displayName : ${user.displayName}");
-        debugPrint("user.uid : ${user.uid}");
-        debugPrint("user.phoneNumber : ${user.phoneNumber}");
-        debugPrint("user.emailVerified : ${user.emailVerified}");
-      },
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Ana Sayfa"),
@@ -29,15 +17,12 @@ class HomePage extends StatelessWidget {
           children: [
             const Text("Ana Sayfa"),
             ElevatedButton(
-                onPressed: () {
-                  user.sendEmailVerification();
-                },
-                child: const Text("E-Posta doğrula")),
+                onPressed: () {}, child: const Text("E-Posta doğrula")),
             ElevatedButton(
                 onPressed: () async {
                   CollectionReference users1 =
-                      FirebaseFirestore.instance.collection('users');
-                  var me = await users1.add({"Deneme1": "Deneme2"});
+                      FirebaseFirestore.instance.collection('Evet');
+                  var me = await users1.add({"aaaa": "bbbb"});
                   print(me.path);
                 },
                 child: const Text("Veri ekle")),
@@ -51,9 +36,34 @@ class HomePage extends StatelessWidget {
                       await gelen.get();
                   if (snapshot.exists) {
                     print(snapshot.data());
+                  } else {
+                    print("Hata");
                   }
                 },
                 child: const Text("Verileri tek seferlik al")),
+            StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection("Evet").snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text(snapshot.error.toString());
+                  } else if (snapshot.hasData) {
+                    var m = snapshot.data!.docs;
+                    
+                    return SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: ListView.builder(
+                      itemCount: m.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(title: Text(m[index].id),);
+                        },
+                      ),
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                })
           ],
         ),
       ),
