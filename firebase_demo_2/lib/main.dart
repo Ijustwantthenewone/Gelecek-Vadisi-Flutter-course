@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_demo_2/page/login_page.dart';
 import 'package:firebase_demo_2/page/register_page.dart';
+import 'package:firebase_demo_2/page/splashScreen.dart';
 import 'package:flutter/material.dart';
-//1:28:50
+// bu nasıl Splash screen oluyor olay zinciri ne yani o flutter logosu nasıl kayboldu ?
+// 59:18
 import 'firebase_options.dart';
 
 void main() async {
@@ -20,9 +22,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Material App',
-      home: LoginPage(),
+      home: Splashscreen(),
     );
   }
 }

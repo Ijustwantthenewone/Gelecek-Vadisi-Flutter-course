@@ -94,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Zaten bir hesabın var mı?")),
+                  child: const Text("Zaten bir hesabın var mı?")),
             ],
           ),
         ),
