@@ -28,42 +28,40 @@ class HomePage extends StatelessWidget {
                 child: const Text("Veri ekle")),
             ElevatedButton(
                 onPressed: () async {
-                  DocumentReference<Map<String, dynamic>> gelen =
-                      FirebaseFirestore.instance
-                          .collection("members")
-                          .doc("DBsPoeroIFBuKJzOrHcr");
-                  DocumentSnapshot<Map<String, dynamic>> snapshot =
-                      await gelen.get();
-                  if (snapshot.exists) {
-                    print(snapshot.data());
-                  } else {
-                    print("Hata");
+                  CollectionReference users =
+                      FirebaseFirestore.instance.collection('Evet');
+                  var snap = await users.get();
+                  for (var x in snap.docs) {
+                    print(x.data());
                   }
                 },
-                child: const Text("Verileri tek seferlik al")),
-            StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection("Evet").snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  } else if (snapshot.hasData) {
-                    var m = snapshot.data!.docs;
-                    
-                    return SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: ListView.builder(
-                      itemCount: m.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(title: Text(m[index].id),);
-                        },
-                      ),
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
+                child: const Text(
+                    "Verileri tek seferlik al")), // canlı snapshot // tek sefer get
+            ElevatedButton(
+                onPressed: () async {
+                  var xes = await FirebaseFirestore.instance
+                      .collection("Evet")
+                      .where("yas", isGreaterThanOrEqualTo: 22)
+                      .get();
+
+                  for (var e in xes.docs) {
+                    debugPrint(
+                        "${e.data()["isim"].toString()} ${e.data()["yas"].toString()}");
                   }
-                })
+                },
+                child: const Text("Where ile filtreleme")),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance.collection("Evet").snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data!.docs[0].data().toString());
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            ),
           ],
         ),
       ),
