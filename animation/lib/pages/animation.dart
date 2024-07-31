@@ -10,35 +10,63 @@ class animation extends StatefulWidget {
 class _animationState extends State<animation> with TickerProviderStateMixin {
   // mixin bütün fonksiyonları alır
 
-  AnimationController? c1;
+  //Animasyonun temel özellikleri
+  //Controller
+  //Ticker
+  //Animation
+
+  AnimationController? animationController;
 
   @override
   void initState() {
-    super.initState();
-    c1 = AnimationController(
+    super
+        .initState(); // alttan yukarı veriler oluşsun taşıt araba elektrikli araba şeklinde
+    animationController = AnimationController(
         vsync: this,
-        lowerBound: 10, // alt sınır
-        upperBound: 100, // üst sınır
-        duration: const Duration(seconds: 2));
-    c1!.forward(); //ileri doğru
-    c1!.addListener(
+        lowerBound: 0, // alt sınır
+        upperBound: 200, // üst sınır
+        duration: const Duration(seconds: 1));
+    animationController!.forward(); //ileri doğru
+    animationController!.addListener(
       () {
-        debugPrint("Sayı ${c1!.value}");
+        debugPrint("Sayı ${animationController!.value}");
+        setState(() {});
       },
     );
-    c1!.addStatusListener(
+    animationController!.addStatusListener(
       (status) {
         if (status == AnimationStatus.completed) {
-          c1!.reverse();
-        } else if (status == AnimationStatus.dismissed) { // dismissed başlangıç demek
-          c1!.forward();
+          animationController!.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          // dismissed başlangıç demek
+          animationController!.forward();
         }
       },
     );
   }
 
   @override
+  void dispose() {
+    // state sonu olduğu için dışarıdan içeriue yani super sonda olacak
+    // bu clası kaldırıyor.
+    animationController!.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Animation"),
+        centerTitle: true,
+      ),
+      body: Container(
+        color: Colors.pinkAccent,
+        height: 100,
+        width: animationController!.value,
+        margin: EdgeInsets.only(left: animationController!.value),
+      ),
+    );
   }
 }
