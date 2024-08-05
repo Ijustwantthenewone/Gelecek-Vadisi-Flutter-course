@@ -1,3 +1,4 @@
+import 'package:animation/animated_widget.dart';
 import 'package:animation/pages/animation.dart';
 import 'package:animation/pages/animation_page.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: AnimationPage(),
+      home: he(),
     );
   }
 }

@@ -10,7 +10,7 @@ class AnimationPage extends StatefulWidget {
 class _animaState extends State<AnimationPage>
     with SingleTickerProviderStateMixin {
   AnimationController? animationController;
-  Animation<double>? slideRightAnimation;
+  Animation? slideRightAnimation;
   Animation? color;
   Animation? aligment;
 
